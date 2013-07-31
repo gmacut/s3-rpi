@@ -1,0 +1,46 @@
+#!/usr/bin/python3
+
+import time
+import threading
+import signal
+import sys
+import RPi.GPIO as GPIO
+
+
+GPIO.setmode(GPIO.BCM)
+INPUT = 25
+OUTPUT = 24
+CURRENTLY_BUZZING = False
+
+GPIO.setup(INPUT, GPIO.IN)
+GPIO.setup(OUTPUT, GPIO.OUT)
+
+def buzz():
+	output = GPIO.PWM(OUTPUT, 140)
+	output.start(50)
+	time.sleep(4)
+	output.stop()
+	time.sleep(1)
+	output.start(50)
+	time.sleep(4)
+	output.stop()
+
+def button_pressed_callback(param):
+	CURRENLY_BUZZING = True
+	print("Rising edge!")
+	thread = threading.Thread(target=buzz)
+	thread.start()
+	thread.join()
+	CURRENTLY_BUZZING = False
+
+def exit(signal, frame):
+	GPIO.cleanup()
+	sys.exit(0)
+
+signal.signal(signal.SIGINT, exit)
+
+while True:
+	if not CURRENTLY_BUZZING and GPIO.input(INPUT):
+		button_pressed_callback(1)
+	else:
+		time.sleep(0.1)
