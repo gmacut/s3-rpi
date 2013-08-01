@@ -1,3 +1,4 @@
 #!/bin/bash
 
-curl -F photo=@image.jpeg http://localhost:57968/Photo
+streamer -o image.jpeg
+curl --http1.0 -F photo=@image.jpeg http://s3.gmacut.net/Photo
