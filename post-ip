@@ -1,0 +1,3 @@
+#!/bin/sh
+
+curl --data "ip=`/sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'`" http://s3.gmacut.net/ip
